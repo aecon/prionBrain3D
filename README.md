@@ -1,6 +1,6 @@
 # prionBrain3D
 
-A toolkit for image processing of large, three-dimensional whole mouse brains.
+A python toolkit for image processing of large, three-dimensional whole mouse brains.
 
 *CAUTION: WORK IN PROGRESS!*
 
