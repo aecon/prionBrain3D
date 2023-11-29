@@ -17,13 +17,3 @@ A python package for image processing of large, three-dimensional whole mouse br
 * C compiler with OpenMP support
 * ImageJ
 * Python packages: tifffile, numba, scipy, scikit-image, pandas, matplotlib
-
-
-
-## Data
-
-3D image files obtained from Light-sheet microscopy.
-
-The location of the data should be stored in the environment variable `${DATA}`.
-
-
