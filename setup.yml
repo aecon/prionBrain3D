@@ -1,8 +1,8 @@
 database:
   input_data: "data/test.tif"
   output_directory: "out"
-  flip_horizontally: 0
-  flip_stack: 0
+  flip_horizontally: 1
+  flip_stack: 1
   crop: 1
   crop_coordinates: [107, 151, 250, 250]
 

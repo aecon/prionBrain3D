@@ -1,6 +1,7 @@
 from utils.dataset import Dataset
 from utils.convert import tif2raw
 from utils.crop import crop
+from utils.flip import flip_horizontally, flip_stack
 
 
 def preprocess(dataset):
@@ -11,13 +12,21 @@ def preprocess(dataset):
     dataset.input_raw = _raw
 
     # crop
-    _raw, _nrrd = crop(dataset.input_nrrd, dataset.crop_coordinates)
-    dataset.input_nrrd = _nrrd
-    dataset.input_raw = _raw
+    if dataset.crop:
+        _raw, _nrrd = crop(dataset.input_nrrd, dataset.crop_coordinates)
+        dataset.input_nrrd = _nrrd
+        dataset.input_raw = _raw
 
 
     # flip
-    # TODO ...
+    if dataset.flip_horizontally:
+        _raw, _nrrd = flip_horizontally(dataset.input_nrrd)
+        dataset.input_nrrd = _nrrd
+        dataset.input_raw = _raw
 
+    if dataset.flip_stack:
+        _raw, _nrrd = flip_stack(dataset.input_nrrd)
+        dataset.input_nrrd = _nrrd
+        dataset.input_raw = _raw
 
 

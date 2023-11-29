@@ -14,8 +14,8 @@ class Dataset:
         self.input_raw = None
 
         # preprocessing
-        self.flipH = y["database"]["flip_horizontally"]   # flip horizontally
-        self.flipS = y["database"]["flip_horizontally"]   # flip stack
+        self.flip_horizontally = y["database"]["flip_horizontally"]   # flip horizontally
+        self.flip_stack = y["database"]["flip_horizontally"]   # flip stack
         self.crop = y["database"]["crop"]  # True/False whether to crop
         self.crop_coordinates = y["database"]["crop_coordinates"]   # [x0,y0,x1,y1]
 
