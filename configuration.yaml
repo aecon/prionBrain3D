@@ -1,0 +1,7 @@
+database:
+   input: "data/sample1.tif"
+   output: "./tmp"
+   flip_horizontally: 1
+   flip_stack: 0
+
+

@@ -2,7 +2,7 @@
 
 **CAUTION: WORK IN PROGRESS!**
 
-Under development is a python toolkit for image processing of large, three-dimensional whole mouse brains.
+A python package for image processing of large, three-dimensional whole mouse brains.
 
 
 
@@ -20,24 +20,9 @@ Under development is a python toolkit for image processing of large, three-dimen
 
 
 
-
-## Contents
-
-* pre-processing: Data cropping and flipping.
-
-* segmentation: Segmentation of neuronal cells.
-
-* registration: Registration of brain data to the Allen Brain Anatomical Atlas.
-
-* quantification: Regional statistics for total cell volume.
-
-
-
 ## Data
 
 3D image files obtained from Light-sheet microscopy.
-
-### Location
 
 The location of the data should be stored in the environment variable `${DATA}`.
 
