@@ -1,7 +1,7 @@
 from utils.dataset import Dataset
 from utils.preprocessor import preprocess
 from process.segmentation import segment
-#from process import registration
+from process.registration import register
 #from process import quantification
 
 
@@ -14,11 +14,10 @@ preprocess(dataset)
 # cell segmentation
 segment(dataset)
 
+# registration
+register(dataset)
 
-## Registration
-#data_registered = registration.process(input_data, output_dir, data_segmented)
-#
-#
+
 ## Quantification
 #quantification.process(data_registered)
 

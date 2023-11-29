@@ -1,0 +1,8 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = True
+DimSize = 320 528 228
+ElementSize = 0.025 0.025 0.025
+ElementType = MET_USHORT
+ElementDataFile = fixed.raw
