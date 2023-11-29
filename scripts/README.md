@@ -1,6 +1,6 @@
 # scripts
 
-Stand-along scripts performing the following operations
+**Stand-alone** scripts performing the following operations
 
 
 * pre-processing: Data cropping and flipping.
