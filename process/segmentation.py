@@ -4,18 +4,14 @@ import mmap
 import time
 import numba
 import pickle
-import argparse
 import numpy as np
 import multiprocessing
 from skimage.morphology import remove_small_objects, remove_small_holes, ball
+
 import img3
+from utils.dataset import Dataset
 
-
-
-def stamp(s):
-    me = "segmentation.py"
-    if Verbose:
-        sys.stderr.write("%s: %d: %s\n" % (me, time.time() - start, s))
+me = "segmentation.py"
 
 
 def nrrd_details(fnrrd):
@@ -29,7 +25,6 @@ def nrrd_details(fnrrd):
 
 
 def read_stride(argsk):
-    me = "segmentation.py"
     if len(argsk) != 3:
         sys.stderr.write("%s: -k needs three arguments\n" % me)
         sys.exit(1)
@@ -38,7 +33,6 @@ def read_stride(argsk):
 
 
 def read_input(argsi, me, path, dtype, offset, shape):
-    me = "segmentation.py"
     try:
         a0 = np.memmap(path, dtype, 'r', offset=offset, shape=shape, order='F')
     except FileNotFoundError:
@@ -121,18 +115,21 @@ class Arguments:
         self.rh = 200
 
         # Flags
-        args.p = True
-        args.v = True
+        self.p = False
+        self.v = True
 
 
-def process(input_file, output_directory):
 
-    me = "segmentation.py"
+def segment(dataset):
 
     args = Arguments()
  
     Verbose = args.v
     Parallel = args.p
+
+    input_file = dataset.input_nrrd
+    output_directory = dataset.output_directory
+
     
     # Read RAW data
     dtype, path, shape, offset, dx, dy, dz = nrrd_details(input_file)
@@ -150,7 +147,7 @@ def process(input_file, output_directory):
     start = time.time()
     
     # Create new arrays
-    stamp("create new arrays")
+    print("create new arrays")
     odir = "%s/%s" % (output_directory, "segment")
     if not os.path.exists(odir):
         os.makedirs(odir)
@@ -165,6 +162,9 @@ def process(input_file, output_directory):
     denoised= img3.mmap_create("%s/denoised.raw" % odir, np.dtype("float32"), shape)
     
     img3.nrrd_write("%s/segmented.nrrd" % odir, "%s/segmented.raw" % odir, segmented.dtype, segmented.shape, spacings)
+
+    dataset.segmented_nrrd = "%s/segmented.nrrd" % odir
+
     
     Imax = args.Imax
     Imin = args.Imin
@@ -182,13 +182,13 @@ def process(input_file, output_directory):
         # mask + remove holes and small objects from mask
         keep0 = np.zeros(np.shape(img), dtype=bool)
         keep0[img>=Imin] = 1
-        remove_small_objects(keep0, min_size=ro, in_place = True)
-        remove_small_holes(keep0, area_threshold=rh, in_place = True)
+        remove_small_objects(keep0, min_size=ro, out=keep0)
+        remove_small_holes(keep0, area_threshold=rh, out=keep0)
     
         keep[:,:,k] = keep0.astype(keep.dtype)
 
 
-    stamp("generate mask (multiprocessing.Pool)")
+    print("generate mask (multiprocessing.Pool)")
     if Parallel:
         with multiprocessing.Pool() as pool:
             pool.map(mask, range(shape[2]))
@@ -196,66 +196,66 @@ def process(input_file, output_directory):
         for k in range(shape[2]):
             mask(k)
 
-    stamp("copy (numba)")
+    print("copy (numba)")
     copy(keep, out=tmp8)
     nstep = 10
-    stamp("erode mask (img3.erosion)")
+    print("erode mask (img3.erosion)")
     img3.erosion(tmp8, nstep, keepE)
 
-    stamp("copy (numba)")
+    print("copy (numba)")
     copy(img_stack, out=tmp32a)
-    stamp("img3.memset(tmp32b, 0)")
+    print("img3.memset(tmp32b, 0)")
     img3.memset(tmp32b, 0)
-    stamp("clip Imax (numba)")
+    print("clip Imax (numba)")
     clip(tmp32a, Imax, tmp32b)
 
-    stamp("background smoothing (img3.gauss)")
+    print("background smoothing (img3.gauss)")
     sigma = args.w
     img3.gauss(tmp32b, keep, sigma, tmp32a)
 
-    stamp("intensity normalization (numba)")
+    print("intensity normalization (numba)")
     divide(img_stack, tmp32a, keep, out=tmp32b)
 
-    stamp("img3.memset(tmp32a, 0)")
+    print("img3.memset(tmp32a, 0)")
     img3.memset(tmp32a, 0)
-    stamp("denoise (img3.gauss)")
+    print("denoise (img3.gauss)")
     sigma = 1
     img3.gauss(tmp32b, keep, sigma, tmp32a)
 
-    stamp("mask denoised (numba)")
+    print("mask denoised (numba)")
     mask_array(tmp32a, keep, tmp32b)
 
-    stamp("copy (numba)")
+    print("copy (numba)")
     copy(tmp32b, out=denoised)
 
 
-    stamp("internal from denoised (numba)")
+    print("internal from denoised (numba)")
     uclip(tmp32a, args.Ibmin, tmp32b)
 
-    stamp("0/1 internal")
+    print("0/1 internal")
     binary(tmp32b, tmp8)
 
-    stamp("img3.memset(labels, 0)")
+    print("img3.memset(labels, 0)")
     img3.memset(labels, 0)
-    stamp("labels (img3.label)")
+    print("labels (img3.label)")
     Nc = img3.labels(tmp8, labels, work)
     sys.stderr.write("  Nc(all): %d\n" % Nc)
 
-    stamp("img3.remove_small_objects")
+    print("img3.remove_small_objects")
     Nc = img3.remove_small_objects(labels, args.Vmin, work)
     sys.stderr.write("  Nc(Vmin): %d\n" % Nc)
 
-    stamp("0/1 segmented")
+    print("0/1 segmented")
     binary(labels, segmented)
 
-    stamp("candidate cells (img3.objects)")
+    print("candidate cells (img3.objects)")
     lst = img3.objects(labels, Nc)
 
-    stamp("save candidate list to pickle")
+    print("save candidate list to pickle")
     with open("%s/lst.pkl" % odir,'wb') as fl:
         pickle.dump(lst, fl)
 
-    stamp("filter on Imax (for loop)")
+    print("filter on Imax (for loop)")
     lst1 = []
     for l in lst:
         Intensities = denoised[l[:,0], l[:,1], l[:,2]]
@@ -266,10 +266,5 @@ def process(input_file, output_directory):
     Nc = len(lst1)
     sys.stderr.write("  Nc(Imax): %d\n" % Nc)
 
-    stamp("done.")
-
-    return segmented
-
-
-
+    print("done.")
 
