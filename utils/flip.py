@@ -23,10 +23,10 @@ def _flipz(a, out):
                 out[i, j, k] = a[i, j, (nz-k-1)]
 
 
-def _prepare_data(input_nrrd):
+def _prepare_data(input_nrrd, output_directory):
     dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(input_nrrd)
     raw = img3.read_input(input_nrrd, path, dtype, offset, shape)
-    odir = os.path.dirname(input_nrrd)
+    odir = output_directory
     basename = os.path.basename(input_nrrd)
     fout_raw  = "%s/flip_%s.raw"  % ( odir, basename )
     fout_nrrd = "%s/flip_%s.nrrd" % ( odir, basename )
@@ -35,14 +35,14 @@ def _prepare_data(input_nrrd):
     return raw, flip_raw, fout_raw, fout_nrrd
 
 
-def flip_horizontally(input_nrrd):
-    raw, flip_raw, fout_raw, fout_nrrd = _prepare_data(input_nrrd)
+def flip_horizontally(input_nrrd, output_directory):
+    raw, flip_raw, fout_raw, fout_nrrd = _prepare_data(input_nrrd, output_directory)
     _flipx(raw, flip_raw)
     return fout_raw, fout_nrrd
 
 
-def flip_stack(input_nrrd):
-    raw, flip_raw, fout_raw, fout_nrrd = _prepare_data(input_nrrd)
+def flip_stack(input_nrrd, output_directory):
+    raw, flip_raw, fout_raw, fout_nrrd = _prepare_data(input_nrrd, output_directory)
     _flipz(raw, flip_raw)
     return fout_raw, fout_nrrd
 
