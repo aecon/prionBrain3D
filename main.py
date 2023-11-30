@@ -1,4 +1,5 @@
-from utils.dataset import Dataset
+import sys
+from utils.dataset import Dataset, DataCollection
 from utils.preprocessor import preprocess
 from process.segmentation import segment
 from process.registration import register
@@ -6,19 +7,21 @@ from process.registration import register
 
 
 # load setup file
-dataset = Dataset("setup.yml")
+collection = DataCollection("setup.yml")
 
-# pre-process
-preprocess(dataset)
+# loop over samples in collection
+for dataset in collection.datasets:
 
-# cell segmentation
-segment(dataset)
+    # pre-process
+    preprocess(dataset)
 
-# registration
-register(dataset)
+    # cell segmentation
+    segment(dataset)
 
+    # registration
+    register(dataset)
 
-## Quantification
-#quantification.process(data_registered)
+    ## Quantification
+    #quantification.process(data_registered)
 
 

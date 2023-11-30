@@ -1,7 +1,10 @@
+import os
 from utils.dataset import Dataset
 from utils.convert import tif2raw
 from utils.crop import crop
 from utils.flip import flip_horizontally, flip_stack
+from utils.metadata import read_tiff_voxel_size
+import img3
 
 
 def preprocess(dataset):
@@ -12,6 +15,11 @@ def preprocess(dataset):
     _raw, _nrrd = tif2raw(dataset.input_tif, output_directory)
     dataset.input_nrrd = _nrrd
     dataset.input_raw = _raw
+
+    # restore pixel size metadata
+    pz, py, px = read_tiff_voxel_size(dataset.input_tif)
+    _dtype, _path, _shape, _offset, _dx, _dy, _dz = img3.nrrd_details(dataset.input_nrrd)
+    img3.nrrd_write(dataset.input_nrrd, os.path.basename(_path), _dtype, _shape, (px,py,pz))
 
     # crop
     if dataset.crop:

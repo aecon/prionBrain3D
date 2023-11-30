@@ -31,7 +31,7 @@ def _prepare_data(input_nrrd, output_directory):
     fout_raw  = "%s/flip_%s.raw"  % ( odir, basename )
     fout_nrrd = "%s/flip_%s.nrrd" % ( odir, basename )
     flip_raw = img3.mmap_create(fout_raw, raw.dtype, raw.shape)
-    img3.nrrd_write(fout_nrrd, fout_raw, flip_raw.dtype, flip_raw.shape, (1,1,1))
+    img3.nrrd_write(fout_nrrd, fout_raw, flip_raw.dtype, flip_raw.shape, (dx,dy,dz))
     return raw, flip_raw, fout_raw, fout_nrrd
 
 
