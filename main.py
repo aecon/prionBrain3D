@@ -3,6 +3,7 @@ from utils.dataset import Dataset, DataCollection
 from utils.preprocessor import preprocess
 from process.segmentation import segment
 from process.registration import register
+from process.classification import classify
 #from process import quantification
 
 
@@ -18,10 +19,13 @@ for dataset in collection.datasets:
     # cell segmentation
     segment(dataset)
 
-    # registration
-    register(dataset)
+    # classification
+    classify(dataset)
 
-    ## Quantification
+    # registration
+    #register(dataset)
+
+    # quantification
     #quantification.process(data_registered)
 
 

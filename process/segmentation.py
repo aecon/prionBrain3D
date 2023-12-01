@@ -101,17 +101,17 @@ def copy(a, out):
 class Arguments:
     def __init__(self):
         # Background equalization
-        self.Imax = 450
-        self.Imin = 170
+        self.Imax = 450     # clip Imax for background estimation
+        self.Imin = 170     # minimum Imin for sample mask
 
         # Defaults
-        self.w = 5
-        self.Vmin = 4
-        self.Ibmax = 1.20
-        self.Ibmin = 1.15
+        self.w = 5          # background smoothing sigma
+        self.Vmin = 4       # minimum volume per object
+        #self.Ibmax = 1.20  # minimum max.Intensity per object
+        self.Ibmin = 1.15   # minimum pixel value for segmentation
         self.s = [1,1,1]
-        self.ro = 4
-        self.rh = 200
+        self.rh = 200       # fill small holes (volume smaller than rh)
+        self.ro = self.Vmin
 
         # Flags
         self.p = False
@@ -161,8 +161,10 @@ def segment(dataset):
     denoised= img3.mmap_create("%s/denoised.raw" % odir, np.dtype("float32"), shape)
     
     img3.nrrd_write("%s/segmented.nrrd" % odir, "%s/segmented.raw" % odir, segmented.dtype, segmented.shape, spacings)
+    img3.nrrd_write("%s/denoised.nrrd" % odir, "%s/denoised.raw" % odir, denoised.dtype, denoised.shape, spacings)
 
     dataset.segmented_nrrd = "%s/segmented.nrrd" % odir
+    dataset.denoised_nrrd  = "%s/denoised.nrrd" % odir
 
     
     Imax = args.Imax
@@ -252,17 +254,20 @@ def segment(dataset):
     print("save candidate list to pickle")
     with open("%s/lst.pkl" % odir,'wb') as fl:
         pickle.dump(lst, fl)
+    dataset.lst_pickle = "%s/lst.pkl" % odir
 
-    print("filter on Imax (for loop)")
-    lst1 = []
-    for l in lst:
-        Intensities = denoised[l[:,0], l[:,1], l[:,2]]
-        if np.max(Intensities) >= args.Ibmax:
-            lst1.append(l)
-        else:
-            segmented[l[:,0], l[:,1], l[:,2]] = 0
-    Nc = len(lst1)
-    sys.stderr.write("  Nc(Imax): %d\n" % Nc)
+
+# This currently only alters segmented data not lst    
+#    print("filter on Imax (for loop)")
+#    lst1 = []
+#    for l in lst:
+#        Intensities = denoised[l[:,0], l[:,1], l[:,2]]
+#        if np.max(Intensities) >= args.Ibmax:
+#            lst1.append(l)
+#        else:
+#            segmented[l[:,0], l[:,1], l[:,2]] = 0
+#    Nc = len(lst1)
+#    sys.stderr.write("  Nc(Imax): %d\n" % Nc)
 
     print("done.")
 

@@ -27,6 +27,11 @@ class Dataset:
         # segmentation
         self.segmented_nrrd = None
 
+        # classification
+        self.denoised_nrrd = None
+        self.lst_pickle = None
+        self.features = None
+
         # registration
         self.registered_mhd = None
 
