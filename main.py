@@ -4,7 +4,7 @@ from utils.preprocessor import preprocess
 from process.segmentation import segment
 from process.registration import register
 from process.classification import classify
-#from process import quantification
+#from process.quantification import quantify
 
 
 # load setup file
@@ -23,9 +23,8 @@ for dataset in collection.datasets:
     classify(dataset)
 
     # registration
-    #register(dataset)
+    register(dataset)
 
     # quantification
-    #quantification.process(data_registered)
-
+    #quantify(dataset)
 

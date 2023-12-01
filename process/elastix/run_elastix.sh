@@ -17,10 +17,15 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 out=$1
 input_auto=$2
 input_seg=$3
+echo $out
+echo $input_auto
+echo $input_seg
 
-atlas=${SCRIPTPATH}/"fixed.mhd"
+
+atlas=${SCRIPTPATH}/"atlas.nrrd"
 affine=${SCRIPTPATH}/"affine.txt"
 bspline=${SCRIPTPATH}/"bspline.txt"
+threads=32
 
 outEa=${out}/elastix_affine
 outEb=${out}/elastix_bspline
@@ -30,9 +35,12 @@ mkdir -p ${outEb}
 mkdir -p ${outT}
 
 # autofluorescence registration
-${elastix} -out ${outEa} -f ${atlas} -m ${input_auto} -p ${affine} -threads 32
-${elastix} -out ${outEb} -f ${atlas} -m ${input_auto} -p ${bspline} -t0 ${outEa}/TransformParameters.0.txt  -threads 32
+${elastix} -out ${outEa} -f ${atlas} -m ${input_auto} -p ${affine} -threads $threads
+${elastix} -out ${outEb} -f ${atlas} -m ${input_auto} -p ${bspline} -t0 ${outEa}/TransformParameters.0.txt  -threads $threads
+
+# append to Bspline file
+echo "(FinalBSplineInterpolationOrder 0)" >> ${outEb}/TransformParameters.0.txt
 
 # apply transformation to segmentation
-${transformix} -in ${input_seg} -out ${outT} -tp ${outEb}/TransformParameters.0.txt -threads 32
+${transformix} -in ${input_seg} -out ${outT} -tp ${outEb}/TransformParameters.0.txt -threads $threads
 
