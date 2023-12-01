@@ -38,9 +38,10 @@ mkdir -p ${outT}
 ${elastix} -out ${outEa} -f ${atlas} -m ${input_auto} -p ${affine} -threads $threads
 ${elastix} -out ${outEb} -f ${atlas} -m ${input_auto} -p ${bspline} -t0 ${outEa}/TransformParameters.0.txt  -threads $threads
 
-# append to Bspline file
-echo "(FinalBSplineInterpolationOrder 0)" >> ${outEb}/TransformParameters.0.txt
+# edit the Bspline file to use for transforming binary segmented data
+cp ${outEb}/TransformParameters.0.txt ${outT}/
+sed -i "/FinalBSplineInterpolationOrder/c\(FinalBSplineInterpolationOrder 0)" ${outT}/TransformParameters.0.txt
 
 # apply transformation to segmentation
-${transformix} -in ${input_seg} -out ${outT} -tp ${outEb}/TransformParameters.0.txt -threads $threads
+${transformix} -in ${input_seg} -out ${outT} -tp ${outT}/TransformParameters.0.txt -threads $threads
 
