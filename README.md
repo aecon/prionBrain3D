@@ -1,4 +1,4 @@
-# prionBrain3D
+# BrainCell3D
 
 **WORK IN PROGRESS!**
 
