@@ -101,17 +101,16 @@ def copy(a, out):
 class Arguments:
     def __init__(self):
         # Background equalization
-        self.Imax = 1000
-        self.Imin = 200
+        self.Imax = 450
+        self.Imin = 170
 
         # Defaults
-        self.w = 50
-        self.log = 0.3
-        self.Vmin = 27
-        self.Ibmax = 2.0
-        self.Ibmin = 1.8
+        self.w = 5
+        self.Vmin = 4
+        self.Ibmax = 1.20
+        self.Ibmin = 1.15
         self.s = [1,1,1]
-        self.ro = 27
+        self.ro = 4
         self.rh = 200
 
         # Flags
@@ -148,7 +147,7 @@ def segment(dataset):
     
     # Create new arrays
     print("create new arrays")
-    odir = "%s/%s" % (output_directory, "segment")
+    odir = output_directory + "/segment"
     if not os.path.exists(odir):
         os.makedirs(odir)
     keep    = img3.mmap_create("%s/mask.raw" % odir, np.dtype("uint8"), shape)
@@ -227,7 +226,6 @@ def segment(dataset):
 
     print("copy (numba)")
     copy(tmp32b, out=denoised)
-
 
     print("internal from denoised (numba)")
     uclip(tmp32a, args.Ibmin, tmp32b)
