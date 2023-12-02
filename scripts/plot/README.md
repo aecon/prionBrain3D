@@ -1,7 +1,4 @@
-# Plots
-
-
-## Contents
+# Ploting tools
 
 
 ### voxelization
