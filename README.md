@@ -9,21 +9,30 @@ A python package for image processing of large, three-dimensional whole mouse br
 
 * [img3D package](https://github.com/aecon/img3D)
 * [elastix](https://elastix.lumc.nl)
+* [Fiji](https://fiji.sc)
+* [AllenSDK](https://allensdk.readthedocs.io/en/latest)
 * Python packages (see below)
 
 
-### Optional requirements
+### Installation
 
-* C compiler with OpenMP support
-* ImageJ
-
-
-## Environment
-
+Create a new conda environment.
 ```
-conda create -n "prionBrain3D" python=3.10
+conda create -n "prionBrain3D" python=3.10.13
+```
 
+Activate the environment.
+```
 conda activate prionBrain3D
-
-conda install scikit-learn scikit-image pyparsing six pyyaml
 ```
+
+Install python packages.
+```
+pip install -r requirements.txt
+```
+
+<!---
+I installed:
+    conda install scikit-learn scikit-image pyparsing six pyyaml statsmodels
+-->
+
