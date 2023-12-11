@@ -6,7 +6,7 @@ if [ "$#" -ne 3 ]; then
     exit
 fi
 
-ELASTIX_PATH=/home/neptun/Downloads/elastix
+ELASTIX_PATH=${HOME}/Downloads/elastix
 export LD_LIBRARY_PATH=${ELASTIX_PATH}/lib/
 elastix="${ELASTIX_PATH}/bin/elastix"
 transformix="${ELASTIX_PATH}/bin/transformix"
