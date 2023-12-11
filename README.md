@@ -18,12 +18,12 @@ A python package for image processing of large, three-dimensional whole mouse br
 
 Create a new conda environment.
 ```
-conda create -n "prionBrain3D" python=3.10.13
+conda create -n "BrainCell3D" python=3.10.13
 ```
 
 Activate the environment.
 ```
-conda activate prionBrain3D
+conda activate BrainCell3D
 ```
 
 Install python packages.
