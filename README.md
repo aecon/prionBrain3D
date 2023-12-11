@@ -1,6 +1,6 @@
 # BrainCell3D
 
-**\>\>\> WORK IN PROGRESS ! \<\<\<**
+**\>\>\> UNDER DEVELOPMENT ! \<\<\<**
 
 A python package for image processing of large, three-dimensional whole mouse brains.
 
