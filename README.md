@@ -1,4 +1,4 @@
-# BrainCell3D
+# prionBrain3D
 
 **Under Development. The corresponding publication will be available soon.**
 
