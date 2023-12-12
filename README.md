@@ -18,12 +18,12 @@ A python package to analyze 3D neuronal cells in prion-infected brain samples, a
 
 Create a new conda environment.
 ```
-conda create -n "BrainCell3D" python=3.10.13
+conda create -n "prionBrain3D" python=3.10.13
 ```
 
 Activate the environment.
 ```
-conda activate BrainCell3D
+conda activate prionBrain3D
 ```
 
 Install python packages.
