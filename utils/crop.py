@@ -13,6 +13,15 @@ def _crop(a, out, x0, y0):
                 out[i, j, k] = a[x0+i, y0+j, k]
 
 
+def get_filenames(input_nrrd, output_directory):
+    """
+    Returns paths to the generated raw and nrrd files
+    """
+    raw_path = "%s/cropped_%s.raw" % ( output_directory, os.path.basename(input_nrrd) )
+    nrrd_path = "%s/cropped_%s.nrrd" % ( output_directory, os.path.basename(input_nrrd) )
+    return raw_path, nrrd_path
+
+
 def crop(input_nrrd, coordinates, output_directory):
     x0, y0, x1, y1 = coordinates
     #print("inside crop:", coordinates)
@@ -30,11 +39,12 @@ def crop(input_nrrd, coordinates, output_directory):
     Lx = x1 - x0
     Ly = y1 - y0
 
-    foutr = "%s/cropped_%s.raw" % ( output_directory, os.path.basename(input_nrrd) )
-    foutn = "%s/cropped_%s.nrrd" % ( output_directory, os.path.basename(input_nrrd) )
+    foutr, foutn = get_filenames(input_nrrd, output_directory)
+
     cropped = img3.mmap_create(foutr, img_stack.dtype, [Lx,Ly,shape[2]])
     img3.nrrd_write(foutn, foutr, cropped.dtype, cropped.shape, spacings)
 
     _crop(img_stack, cropped, x0, y0)
 
-    return foutr, foutn    
+    return foutr, foutn
+
