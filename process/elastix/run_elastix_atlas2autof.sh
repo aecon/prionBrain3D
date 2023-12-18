@@ -49,7 +49,7 @@ fi
 
 # transformation of annotation atlas 
 # edit the Bspline file to use for transforming binary segmented data
-if [ ! -f "${outT}/result.0.nrrd" ]; then
+if [ ! -f "${outT}/result.nrrd" ]; then
     cp ${outEb}/TransformParameters.0.txt ${outT}/
     sed -i "/FinalBSplineInterpolationOrder/c\(FinalBSplineInterpolationOrder 0)" ${outT}/TransformParameters.0.txt
     

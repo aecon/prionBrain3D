@@ -52,8 +52,14 @@ def register_atlas2autofluorescence(dataset):
         print("(registration) Autofluorescence channel (big endian) exists:")
         print(autofluorescence_nrrd_big_endian)
 
-    # run elstix for brain registration to Allen Brain Anatomical Atlas
-    # TODO: Add checkpoint to skip step if files already exist
-    cmd = "./process/elastix/run_elastix_atlas2autof.sh %s %s" % (output_directory, autofluorescence_nrrd_big_endian)
-    os.system(cmd)
+    # output filenames after registration
+    dataset.registered_reference_atlas = "%s/elastix_bspline/result.0.nrrd" % (output_directory)
+    dataset.registered_annotation_atlas = "%s/transformix/result.nrrd" % (output_directory)
 
+    # run elstix for brain registration to Allen Brain Anatomical Atlas
+    if ( not os.path.isfile(dataset.registered_reference_atlas) ) or ( not os.path.isfile(dataset.registered_annotation_atlas) ):
+        print("(registration) Running elastix ...")
+        cmd = "./process/elastix/run_elastix_atlas2autof.sh %s %s" % (output_directory, autofluorescence_nrrd_big_endian)
+        os.system(cmd)
+    else:
+        print("(registration) Registration completed.")
