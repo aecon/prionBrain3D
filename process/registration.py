@@ -53,6 +53,7 @@ def register_atlas2autofluorescence(dataset):
         print(autofluorescence_nrrd_big_endian)
 
     # run elstix for brain registration to Allen Brain Anatomical Atlas
+    # TODO: Add checkpoint to skip step if files already exist
     cmd = "./process/elastix/run_elastix_atlas2autof.sh %s %s" % (output_directory, autofluorescence_nrrd_big_endian)
     os.system(cmd)
 
