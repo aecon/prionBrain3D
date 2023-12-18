@@ -23,15 +23,25 @@ def _flipz(a, out):
                 out[i, j, k] = a[i, j, (nz-k-1)]
 
 
+def get_filenames(input_nrrd, output_directory):
+    """
+    Returns paths to the generated raw and nrrd files
+    """
+    basename = os.path.basename(input_nrrd)
+    raw_path  = "%s/flip_%s.raw"  % ( output_directory, basename )
+    nrrd_path = "%s/flip_%s.nrrd" % ( output_directory, basename )
+    return raw_path, nrrd_path
+
+
 def _prepare_data(input_nrrd, output_directory):
     dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(input_nrrd)
     raw = img3.read_input(input_nrrd, path, dtype, offset, shape)
-    odir = output_directory
-    basename = os.path.basename(input_nrrd)
-    fout_raw  = "%s/flip_%s.raw"  % ( odir, basename )
-    fout_nrrd = "%s/flip_%s.nrrd" % ( odir, basename )
+
+    fout_raw, fout_nrrd = get_filenames(input_nrrd, output_directory)
+
     flip_raw = img3.mmap_create(fout_raw, raw.dtype, raw.shape)
     img3.nrrd_write(fout_nrrd, fout_raw, flip_raw.dtype, flip_raw.shape, (dx,dy,dz))
+
     return raw, flip_raw, fout_raw, fout_nrrd
 
 
