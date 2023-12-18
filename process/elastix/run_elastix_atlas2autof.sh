@@ -26,8 +26,8 @@ echo $out
 echo $input_auto
 
 
-atlas=${SCRIPTPATH}/"ABA_25um_annotation_hemisphere.nrrd"
-atlas_annotation=${SCRIPTPATH}/"ABA_25um_reference_hemisphere.nrrd"
+atlas=${SCRIPTPATH}/"ABA_25um_reference_hemisphere.nrrd"
+atlas_annotation=${SCRIPTPATH}/"ABA_25um_annotation_hemisphere.nrrd"
 affine=${SCRIPTPATH}/"affine.txt"
 bspline=${SCRIPTPATH}/"bspline.txt"
 threads=32
