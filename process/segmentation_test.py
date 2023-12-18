@@ -1,6 +1,7 @@
 import os
 import sys
 import nrrd
+import pickle
 import numpy as np
 
 import img3
@@ -81,6 +82,7 @@ def segment(dataset):
     #
     excluded_brain_regions = ['Main olfactory bulb', 'Accessory olfactory bulb', 'Anterior olfactory nucleus', 'Taenia tecta', 'ventricular systems']
     excluded_area_IDs = ABAregion_to_ID(output_directory, excluded_brain_regions)
+    excluded_area_IDs.append(81) # ventricles
     print(excluded_area_IDs)
 
     print("(segment) Constructing a mask of excluded brain regions ...")
@@ -91,6 +93,9 @@ def segment(dataset):
 
     print("(segment) Set to 0 excluded brain regions in denoised ...")
     remove_area(tmp8, denoised, 1)
+
+    # TODO: REMOVE
+    tmp32a[:,:,:] = tmp8[:,:,:]
 
 
     #
