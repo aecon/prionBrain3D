@@ -34,5 +34,8 @@ pip install -r requirements.txt
 <!---
 I installed:
     conda install scikit-learn scikit-image pyparsing six pyyaml statsmodels
+    pip install allensdk
+    pip install ipykernel
+    python -m ipykernel install --user --name=prionBrain3D
 -->
 

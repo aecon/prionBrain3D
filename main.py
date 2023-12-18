@@ -1,7 +1,7 @@
 import sys
 from utils.dataset import Dataset, DataCollection
 from utils.preprocessor import preprocess
-from process.segmentation import segment
+from process.segmentation_test import segment
 from process.registration import register_atlas2autofluorescence as register
 from process.classification import classify
 #from process.quantification import quantify
@@ -24,12 +24,11 @@ for dataset in collection.datasets:
         print("(main) Continuing with rest of processing ...")
 
     # registration
-    print("(main) Registration ...")
     register(dataset)
 
-#    # cell segmentation
-#    segment(dataset)
-#
+    # cell segmentation
+    segment(dataset)
+
 #    # classification
 #    classify(dataset)
 #
