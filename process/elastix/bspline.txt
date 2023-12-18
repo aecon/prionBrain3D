@@ -18,12 +18,12 @@
 (ErodeMask "false" )
 
 (NumberOfResolutions 3)
-(FinalGridSpacingInVoxels 25.000000 25.000000 25.000000)
 
 (HowToCombineTransforms "Compose")
 
 (WriteTransformParametersEachIteration "false")
 (WriteResultImage "true")
+(ResultImageFormat "nrrd")
 (CompressResultImage "false")
 (WriteResultImageAfterEachResolution "false")
 (ShowExactMetricValue "false")
@@ -33,7 +33,7 @@
 (UseFastAndLowMemoryVersion "true")
 
 //Maximum number of iterations in each resolution level:
-(MaximumNumberOfIterations 5000 ) 
+(MaximumNumberOfIterations 10000 ) 
 
 //Number of grey level bins in each resolution level:
 (NumberOfHistogramBins 128 )
@@ -47,7 +47,7 @@
 (FixedImageBSplineInterpolationOrder 1 )
 (UseRandomSampleRegion "true")
 (SampleRegionSize 50.0 50.0 50.0)
-(NumberOfSpatialSamples 10000 )
+(NumberOfSpatialSamples 3000 )
 (NewSamplesEveryIteration "true")
 (CheckNumberOfSamples "false")
 (MaximumNumberOfSamplingAttempts 10)

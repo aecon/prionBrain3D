@@ -33,7 +33,7 @@
 (ShowExactMetricValue "false")
 
 //Maximum number of iterations in each resolution level:
-(MaximumNumberOfIterations 2000)
+(MaximumNumberOfIterations 10000)
 
 //Number of grey level bins in each resolution level:
 (NumberOfHistogramBins 32)
@@ -45,7 +45,7 @@
 //Number of spatial samples used to compute the mutual information in each resolution level:
 (ImageSampler "RandomCoordinate" )
 //(FixedImageBSplineInterpolationOrder 3)
-(NumberOfSpatialSamples 4000)
+(NumberOfSpatialSamples 3000)
 (NewSamplesEveryIteration "true")
 (CheckNumberOfSamples "true" )
 (MaximumNumberOfSamplingAttempts 2)
