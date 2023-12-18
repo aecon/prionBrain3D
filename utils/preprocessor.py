@@ -11,6 +11,7 @@ import img3
 def preprocess(dataset):
 
     me = "preprocess"
+    first_pass = False
 
     output_directory = dataset.output_directory
 
@@ -22,6 +23,7 @@ def preprocess(dataset):
     # convert signal channel tif to raw
     _raw, _nrrd = convert.get_filenames(dataset.input_tif, output_directory)
     if not os.path.isfile(_nrrd):
+        first_pass = True
         print("(%s) Signal raw/nrrd does not exist. Generating now ..." % me)
         _, _ = convert.tif2raw(dataset.input_tif, output_directory)
     else:
@@ -34,6 +36,7 @@ def preprocess(dataset):
     if dataset.input_autofluorescence_tif != None:
         _raw, _nrrd = convert.get_filenames(dataset.input_autofluorescence_tif, output_directory)
         if not os.path.isfile(_nrrd):
+            first_pass = True
             print("(%s) Autofluorescence raw/nrrd does not exist. Generating now ..." % me)
             _, _ = convert.tif2raw(dataset.input_autofluorescence_tif, output_directory)
         else:
@@ -56,6 +59,10 @@ def preprocess(dataset):
     #pz, py, px = read_tiff_voxel_size(dataset.input_autofluorescence_tif)
     _dtype, _path, _shape, _offset, _dx, _dy, _dz = img3.nrrd_details(dataset.input_autof_nrrd)
     img3.nrrd_write(dataset.input_autof_nrrd, os.path.basename(_path), _dtype, _shape, (px,py,pz))
+
+
+    if first_pass == True:
+        return 1
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,3 +135,5 @@ def preprocess(dataset):
     else:
         print("(%s) NO stack flip." % me)
 
+
+    return 0

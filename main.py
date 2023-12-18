@@ -8,13 +8,22 @@ from process.classification import classify
 
 
 # load setup file
-collection = DataCollection("setup.yml")
+collection = DataCollection("setup_testSert.yml")
 
-# loop over samples in collection
+
+# 1st loop: generation of raw/nrrd files
 for dataset in collection.datasets:
 
     # pre-process
-    preprocess(dataset)
+    stop_for_cropping = preprocess(dataset)
+    if stop_for_cropping==True:
+        print("(main) Stopped for cropping.")
+        continue
+    else:
+        print("(main) Continuing with rest of processing ...")
+
+    # registration
+    register(dataset)
 
     # cell segmentation
     segment(dataset)
@@ -22,8 +31,6 @@ for dataset in collection.datasets:
     # classification
     classify(dataset)
 
-    # registration
-    register(dataset)
 
     # quantification
     #quantify(dataset)
