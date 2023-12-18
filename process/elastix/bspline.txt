@@ -48,7 +48,7 @@
 (Index 0 0 0)
 (UseDirectionCosines "false")
 (ImagePyramidSchedule 2 2 2 1 1 1)
-(FinalGridSpacingInVoxels 50 50 50 )
+(FinalGridSpacingInVoxels 200 200 200 )
 (ResultImagePixelType "unsigned short")
 (WriteTransformParametersEachResolution "false")
 (WritePyramidImagesAfterEachResolution "false")
