@@ -40,14 +40,20 @@ mkdir -p ${outEb}
 mkdir -p ${outT}
 
 # registration of atlas onto the autofluorescence channel
-${elastix} -out ${outEa} -m ${atlas} -f ${input_auto} -p ${affine} -threads $threads
-${elastix} -out ${outEb} -m ${atlas} -f ${input_auto} -p ${bspline} -t0 ${outEa}/TransformParameters.0.txt  -threads $threads
+if [ ! -f "${outEa}/result.0.nrrd" ]; then
+    ${elastix} -out ${outEa} -m ${atlas} -f ${input_auto} -p ${affine} -threads $threads
+fi
+if [ ! -f "${outEb}/result.0.nrrd" ]; then
+    ${elastix} -out ${outEb} -m ${atlas} -f ${input_auto} -p ${bspline} -t0 ${outEa}/TransformParameters.0.txt  -threads $threads
+fi
 
 # transformation of annotation atlas 
 # edit the Bspline file to use for transforming binary segmented data
-cp ${outEb}/TransformParameters.0.txt ${outT}/
-sed -i "/FinalBSplineInterpolationOrder/c\(FinalBSplineInterpolationOrder 0)" ${outT}/TransformParameters.0.txt
-
-# apply transformation to segmentation
-${transformix} -in ${atlas_annotation} -out ${outT} -tp ${outT}/TransformParameters.0.txt -threads $threads
+if [ ! -f "${outT}/result.0.nrrd" ]; then
+    cp ${outEb}/TransformParameters.0.txt ${outT}/
+    sed -i "/FinalBSplineInterpolationOrder/c\(FinalBSplineInterpolationOrder 0)" ${outT}/TransformParameters.0.txt
+    
+    # apply transformation to segmentation
+    ${transformix} -in ${atlas_annotation} -out ${outT} -tp ${outT}/TransformParameters.0.txt -threads $threads
+fi
 

@@ -32,6 +32,10 @@ class Dataset:
         self.crop = dictionary["crop"]   # 0/1 crop?
         self.crop_coordinates = dictionary["crop_coordinates"]   # [x0,y0,x1,y1]
 
+        # registration
+        self.registered_reference_atlas = None
+        self.registered_annotation_atlas = None
+
         # segmentation
         self.segmented_nrrd = None
 
@@ -39,9 +43,6 @@ class Dataset:
         self.denoised_nrrd = None
         self.lst_pickle = None
         self.features = None
-
-        # registration
-        self.registered_mhd = None
 
 
 

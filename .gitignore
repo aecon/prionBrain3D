@@ -1,5 +1,4 @@
 data
 *__pycache__
 *.pkl
-*ABA_25um_annotation_hemisphere.nrrd
-*ABA_25um_reference_hemisphere.nrrd
+*.nrrd
