@@ -41,7 +41,6 @@ class Dataset:
         self.lst_pickle = None
 
         # classification
-        self.features = None
         self.segmented_nrrd = None
 
 

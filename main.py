@@ -4,7 +4,7 @@ from utils.preprocessor import preprocess
 from process.segmentation_test import segment
 from process.registration import register_atlas2autofluorescence as register
 from process.classification import classify
-#from process.quantification import quantify
+from process.quantification_onSample import quantify
 
 
 # load setup file
@@ -33,5 +33,5 @@ for dataset in collection.datasets:
     classify(dataset)
 
     # quantification
-    #quantify(dataset)
+#    quantify(dataset)
 

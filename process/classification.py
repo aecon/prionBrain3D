@@ -123,78 +123,92 @@ def lst_to_features(dataset):
     # save to file
     header = "label vol Imax Iavg Istd lx2 ly2 lz2 Rg asph acyl kappa Lmax Lmin Vrs Vre"
     features = np.c_[labels, counts, int_max, int_avg, int_std, obj_lx2, obj_ly2, obj_lz2, obj_Rg, obj_asph, obj_acyl, obj_kappa, obj_lmax, obj_lmin, obj_Vrs, obj_Vre]
-    np.savetxt("%s/candidates_features.dat" % odir, features, header=header, fmt='%.16e')
 
-    dataset.features = "%s/candidates_features.dat" % odir
+    f_features = "%s/candidates_features.dat" % odir
+    np.savetxt(f_features, features, header=header, fmt='%.16e')
+
+    return f_features
 
 
 
 def classify(dataset):
 
-    lst_to_features(dataset)
+    f_segmented_nrrd = "%s/%s_cells.nrrd" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd))
+    f_segmented_raw  = "%s/%s_cells.raw"  % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd))
 
-    features_file = dataset.features
-    lst_pickle_file = dataset.lst_pickle
-    denoised_nrrd = dataset.denoised_nrrd
+    if not os.path.isfile(f_segmented_nrrd):
 
-    # data
-    # 'idx(sorted)', 'vol', 'Imax', 'Iavg', 'Istd', 'lx2', 'ly2', 'lz2', 'Rg', 'asph', 'acyl', 'kappa', 'Lmax', 'Lmin', 'Vrs', 'Vre'
-    #      0           1       2       3       4      5      6      7      8      9      10      11      12       13      14     15
-    X0 = np.loadtxt(features_file, skiprows=1)
-    idxE = np.prod(np.isfinite(X0), axis=1) # remove rows with nan/inf
-    X   = X0[:, 2::]
-    vol = X0[:, 1]
-    X[idxE==0, -1] = 0
-    vol[idxE==0] = 0
+        f_features = lst_to_features(dataset)
 
-    # load scaler
-    with open(SCALER, 'rb') as fl:
-        scaler = pickle.load(fl)
-    print("Loaded scaler")
+        features_file   = f_features
+        lst_pickle_file = dataset.lst_pickle
+        denoised_nrrd   = dataset.denoised_nrrd
 
-    # regularization
-    X_scaled = scaler.transform(X)
+        # data
+        # 'idx(sorted)', 'vol', 'Imax', 'Iavg', 'Istd', 'lx2', 'ly2', 'lz2', 'Rg', 'asph', 'acyl', 'kappa', 'Lmax', 'Lmin', 'Vrs', 'Vre'
+        #      0           1       2       3       4      5      6      7      8      9      10      11      12       13      14     15
+        X0 = np.loadtxt(features_file, skiprows=1)
+        idxE = np.prod(np.isfinite(X0), axis=1) # remove rows with nan/inf
+        X   = X0[:, 2::]
+        vol = X0[:, 1]
+        X[idxE==0, -1] = 0
+        vol[idxE==0] = 0
 
-    # load classifier
-    with open(CLASSIFIER, 'rb') as fl:
-        classifier = pickle.load(fl)
-    print("Loaded classifier")
+        # load scaler
+        with open(SCALER, 'rb') as fl:
+            scaler = pickle.load(fl)
+        print("Loaded scaler")
 
-    # prediction
-    y_pred = classifier.predict(X_scaled)
-    print("Generated predictions")
+        # regularization
+        X_scaled = scaler.transform(X)
 
+        # load classifier
+        with open(CLASSIFIER, 'rb') as fl:
+            classifier = pickle.load(fl)
+        print("Loaded classifier")
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # WRITE BINARY ARRAY WITH PREDICTED CELLS
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    # denoised shape and pixels spacings (here: 1,1,1) ..
-    dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
-    print("Read denoised.nrrd")
-
-    # new cells array
-    cells8 = img3.mmap_create("%s/%s_cells.raw" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), np.dtype("uint8"), shape)
-    img3.nrrd_write("%s/%s_cells.nrrd" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), "%s/%s_cells.raw" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), cells8.dtype, cells8.shape, (dx,dy,dz))
-    img3.memset(cells8, 0)
-    print("img3.memset(cells8, 0)")
-
-    # list of objects
-    with open(lst_pickle_file, 'rb') as fl:
-        lst = pickle.load(fl)
-    Nc = len(lst)
-    counts = np.zeros(Nc)
-    for idx,l in enumerate(lst):
-        counts[idx] = l.shape[0]
-    sort_idx = np.argsort(counts)
-    print("Sorted counts")
-    print(len(sort_idx), len(lst), len(y_pred))
+        # prediction
+        y_pred = classifier.predict(X_scaled)
+        print("Generated predictions")
 
 
-    # loop over candidate cells
-    for idx,i0 in enumerate(sort_idx):
-        if y_pred[idx]==1 and idxE[idx]==1:
-            l = lst[i0]
-            assert(l.shape[0] > 0)
-            cells8[l[:,0], l[:,1], l[:,2]] = 1
-   
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # WRITE BINARY ARRAY WITH PREDICTED CELLS
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        # denoised shape and pixels spacings (here: 1,1,1) ..
+        dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
+        print("Read denoised.nrrd")
+
+        # new cells array
+        cells8 = img3.mmap_create(f_segmented_raw, np.dtype("uint8"), shape)
+
+        img3.memset(cells8, 0)
+        print("img3.memset(cells8, 0)")
+
+        # list of objects
+        with open(lst_pickle_file, 'rb') as fl:
+            lst = pickle.load(fl)
+        Nc = len(lst)
+        counts = np.zeros(Nc)
+        for idx,l in enumerate(lst):
+            counts[idx] = l.shape[0]
+        sort_idx = np.argsort(counts)
+        print("Sorted counts")
+        print(len(sort_idx), len(lst), len(y_pred))
+
+
+        # loop over candidate cells
+        for idx,i0 in enumerate(sort_idx):
+            if y_pred[idx]==1 and idxE[idx]==1:
+                l = lst[i0]
+                assert(l.shape[0] > 0)
+                cells8[l[:,0], l[:,1], l[:,2]] = 1
+ 
+        # write nrrd 
+        img3.nrrd_write(f_segmented_nrrd, f_segmented_raw, cells8.dtype, cells8.shape, (dx,dy,dz))
+
+
+    # pass path to dataset
+    dataset.segmented_nrrd = f_segmented_nrrd
+
