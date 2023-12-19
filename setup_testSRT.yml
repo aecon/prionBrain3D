@@ -1,0 +1,8 @@
+sample1:
+  input_autofluorescence: "SpeedDrive/ATHENA/Sert/test_data/FullRes_em488__Tiles__left_x2063_y3776_z1797.tif"
+  input_data: "SpeedDrive/ATHENA/Sert/test_data/FullRes_em640__Tiles__left_x2063_y3776_z1797.tif"
+  spacings: [3.06, 3.06, 3.00]
+  flip_horizontally: 1
+  flip_stack: 0
+  crop: 1
+  crop_coordinates: [134, 137, 2027, 3420]

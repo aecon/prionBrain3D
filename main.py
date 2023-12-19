@@ -7,7 +7,7 @@ from process.classification import classify
 from process.quantification_onSample import quantify
 
 
-collection = DataCollection("setup_testSert.yml")
+collection = DataCollection("setup_testSRT.yml")
 
 for dataset in collection.datasets:
 
