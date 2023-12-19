@@ -176,3 +176,6 @@ def segment(dataset):
         with open(f_lst,'wb') as fl:
             pickle.dump(lst1, fl)
 
+    else:
+        print("(segment) Segmentation completed.")
+

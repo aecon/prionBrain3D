@@ -18,22 +18,22 @@ def lst_to_features(dataset):
     if not os.path.exists(odir):
         os.makedirs(odir)
 
-    print("read denoised raw/nrrd")
+    print("(classify) read denoised raw/nrrd")
     dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
     denoised = np.memmap(path, dtype, 'r', offset=offset, shape=shape, order='F')
 
-    print("read lst pickle")
+    #print("read lst pickle")
     with open(lst_pickle, 'rb') as fl:
         lst = pickle.load(fl)
 
-    print("compute counts")
+    #print("compute counts")
     Nc = len(lst)
-    print(Nc)
+    print("(classify) detected %d objects" % Nc)
     counts = np.zeros(Nc)
     for idx,l in enumerate(lst):
         counts[idx] = l.shape[0]
 
-    print("sort by volume")
+    #print("sort by volume")
     sort_idx = np.argsort(counts)
 
     Nc = len(lst)
@@ -54,7 +54,7 @@ def lst_to_features(dataset):
     obj_Vrs   = np.zeros(Nc, dtype=np.dtype(np.float32))
     obj_Vre   = np.zeros(Nc, dtype=np.dtype(np.float32))
 
-    print("loop over objects")
+    print("(classify) loop over objects")
     for idx,i0 in enumerate(sort_idx):
         l = lst[i0]
         assert(l.shape[0] > 0)
@@ -133,6 +133,8 @@ def lst_to_features(dataset):
 
 def classify(dataset):
 
+    denoised_nrrd = dataset.denoised_nrrd
+
     f_segmented_nrrd = "%s/%s_cells.nrrd" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd))
     f_segmented_raw  = "%s/%s_cells.raw"  % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd))
 
@@ -157,7 +159,7 @@ def classify(dataset):
         # load scaler
         with open(SCALER, 'rb') as fl:
             scaler = pickle.load(fl)
-        print("Loaded scaler")
+        print(" (classify) Loaded scaler")
 
         # regularization
         X_scaled = scaler.transform(X)
@@ -165,11 +167,11 @@ def classify(dataset):
         # load classifier
         with open(CLASSIFIER, 'rb') as fl:
             classifier = pickle.load(fl)
-        print("Loaded classifier")
+        print("(classify) Loaded classifier")
 
         # prediction
         y_pred = classifier.predict(X_scaled)
-        print("Generated predictions")
+        print("(classify) Generated predictions")
 
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,13 +180,13 @@ def classify(dataset):
 
         # denoised shape and pixels spacings (here: 1,1,1) ..
         dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
-        print("Read denoised.nrrd")
+        print("(classify) Read denoised.nrrd")
 
         # new cells array
         cells8 = img3.mmap_create(f_segmented_raw, np.dtype("uint8"), shape)
 
         img3.memset(cells8, 0)
-        print("img3.memset(cells8, 0)")
+        print("(classify) img3.memset(cells8, 0)")
 
         # list of objects
         with open(lst_pickle_file, 'rb') as fl:
@@ -194,11 +196,12 @@ def classify(dataset):
         for idx,l in enumerate(lst):
             counts[idx] = l.shape[0]
         sort_idx = np.argsort(counts)
-        print("Sorted counts")
-        print(len(sort_idx), len(lst), len(y_pred))
+        #print("(classify) Sorted counts")
+        #print(len(sort_idx), len(lst), len(y_pred))
 
 
         # loop over candidate cells
+        print("(classify) Loop over objects and classify")
         for idx,i0 in enumerate(sort_idx):
             if y_pred[idx]==1 and idxE[idx]==1:
                 l = lst[i0]
@@ -212,3 +215,4 @@ def classify(dataset):
     # pass path to dataset
     dataset.segmented_nrrd = f_segmented_nrrd
 
+    print("(classify) Classification completed.")

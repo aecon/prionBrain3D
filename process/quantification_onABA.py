@@ -7,6 +7,8 @@ from pathlib import Path
 from allensdk.core.reference_space_cache import ReferenceSpaceCache
 
 
+# TODO: Update function name and input arguments to match main.py !
+
 def process(aligned_mask):
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

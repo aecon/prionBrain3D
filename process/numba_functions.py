@@ -70,6 +70,14 @@ def construct_mask_0(a, out, value):
                 out[i, j, k] = 0 if a[i, j, k] == value else 1
 
 @numba.njit(parallel=True)
+def construct_mask_1(a, out, value):
+    nx, ny, nz = a.shape
+    for k in numba.prange(nz):
+        for j in numba.prange(ny):
+            for i in numba.prange(nx):
+                out[i, j, k] = 1 if a[i, j, k] == value else 0
+
+@numba.njit(parallel=True)
 def binary_value(a, out, value):
     nx, ny, nz = a.shape
     for k in numba.prange(nz):

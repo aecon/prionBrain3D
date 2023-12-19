@@ -7,11 +7,8 @@ from process.classification import classify
 from process.quantification_onSample import quantify
 
 
-# load setup file
 collection = DataCollection("setup_testSert.yml")
 
-
-# 1st loop: generation of raw/nrrd files
 for dataset in collection.datasets:
 
     # pre-process
@@ -33,5 +30,5 @@ for dataset in collection.datasets:
     classify(dataset)
 
     # quantification
-#    quantify(dataset)
+    quantify(dataset)
 
