@@ -12,6 +12,7 @@ from utils.dataset import Dataset
 def quantify(dataset):
 
     output_directory = dataset.output_directory
+    denoised_nrrd = dataset.denoised_nrrd
 
     # Load aligned segmented data (treated as a binary mask)
     f_segmented_nrrd = dataset.segmented_nrrd
@@ -29,6 +30,7 @@ def quantify(dataset):
     if not os.path.exists(odir_tmp):
         os.makedirs(odir_tmp)
 
+    #                       [1089,                315,         549,        1097,          512,           343]
     brain_regions = ['Hippocampal formation', 'Isocortex', 'Thalamus', 'Hypothalamus', 'Cerebellum', 'Brain stem']
     print("(quantify) get quantification area IDs")
     area_IDs = ABAregion_to_ID(odir_tmp, brain_regions)
@@ -37,27 +39,34 @@ def quantify(dataset):
     # Volume of detected cells per brain region
     mask = img3.mmap_create("%s/tmp_mask.raw" % odir_tmp, np.dtype("uint8"), shape)
 
-    print("(quantify) setting mask elements to 0")
-    mask[:,:,:] = 0
+
 
     cell_volume_per_region = []
     volume_per_region = []
+
+    print("(quantify) looping over quantification area IDs")
     for ID in area_IDs:
+        print(ID)
+        mask[:,:,:] = 0
+        construct_mask_1(annotation_atlas, mask, ID)
 
-        construct_mask(annotation_atlas, mask, ID)
+        print(np.sum(mask))
 
-    	# Mask: detected cells inside brain region
-    	_cells_inside_mask = np.zeros(np.shape(data))
-    	idx = (data>0)*(_mask>0)
-    	_cells_inside_mask[idx] = 1
+        #assert(0)
+        ## Mask: detected cells inside brain region
+        #_cells_inside_mask = np.zeros(np.shape(data))
+        #idx = (data>0)*(_mask>0)
+        #_cells_inside_mask[idx] = 1
+        #
+        ## Total cell volume in region
+        #_volume = np.sum(_cells_inside_mask)
+        #cell_volume_per_region.append(_volume)
+        #
+        ## Volume of brain region
+        #volume_per_region.append(np.sum(_mask))
 
-    	# Total cell volume in region
-    	_volume = np.sum(_cells_inside_mask)
-    	cell_volume_per_region.append(_volume)
 
-    	# Volume of brain region
-    	volume_per_region.append(np.sum(_mask))
-
+    assert(0)
 
     # Write statistics to file
     with open('%s/%s_stats_volume_per_region.dat' % (output_directory, os.path.basename(f_segmented_nrrd)), 'w') as f:
