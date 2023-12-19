@@ -1,11 +1,4 @@
-###################################################
-# File Name     : regional_statistics.py
-# Creation Date : 26-10-2023
-# Author        : Athena Economides, PhD
-# Email         : athena.economides@uzh.ch
 # Reference     : https://allensdk.readthedocs.io/en/latest/_static/examples/nb/reference_space.html#making-structure-masks
-###################################################
-
 
 import os
 import skimage.io
