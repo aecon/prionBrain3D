@@ -37,12 +37,12 @@ class Dataset:
         self.registered_annotation_atlas = None
 
         # segmentation
-        self.segmented_nrrd = None
-
-        # classification
         self.denoised_nrrd = None
         self.lst_pickle = None
+
+        # classification
         self.features = None
+        self.segmented_nrrd = None
 
 
 
