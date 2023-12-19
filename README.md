@@ -1,6 +1,6 @@
 # prionBrain3D
 
-**Under Development. The corresponding publication will be available soon.**
+**UNDER DEVELOPMENT.. The corresponding publication will be available soon.**
 
 A python package to analyze 3D neuronal cells in prion-infected brain samples, acquired at micro-meter pixel resolution.
 
