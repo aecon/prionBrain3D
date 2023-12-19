@@ -29,10 +29,9 @@ for dataset in collection.datasets:
     # cell segmentation
     segment(dataset)
 
-#    # classification
-#    classify(dataset)
-#
-#
-#    # quantification
-#    #quantify(dataset)
+    # classification
+    classify(dataset)
+
+    # quantification
+    #quantify(dataset)
 
