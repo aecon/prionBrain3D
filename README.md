@@ -37,3 +37,7 @@ I installed:
     python -m ipykernel install --user --name=prionBrain3D
 -->
 
+
+## TODO
+* Remove intermediate files.
+
