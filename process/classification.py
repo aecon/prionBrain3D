@@ -1,14 +1,6 @@
 import os
 import pickle
 import numpy as np
-#from sklearn import preprocessing
-#from sklearn.metrics import confusion_matrix
-#from sklearn.metrics import accuracy_score
-#from sklearn.ensemble import RandomForestClassifier
-#
-#import scipy.ndimage
-#import skimage.restoration
-
 
 import img3
 from utils.dataset import Dataset
@@ -17,19 +9,9 @@ SCALER = "process/classifier/scaler.pkl"
 CLASSIFIER = "process/classifier/classifier.pkl"
 
 
-def nrrd_details(fnrrd):
-    nrrd        = img3.nrrd_read(fnrrd)
-    dtype       = nrrd["type"]
-    path        = nrrd["path"]
-    shape       = nrrd["sizes"]
-    offset      = nrrd.get("byte skip", 0)
-    dx, dy, dz  = nrrd.get("spacings")
-    return dtype, path, shape, offset, dx, dy, dz
-
-
 def lst_to_features(dataset):
 
-    odir = "%s/features" % dataset.output_directory
+    odir = "%s/tmp" % dataset.output_directory
     lst_pickle = dataset.lst_pickle
     denoised_nrrd = dataset.denoised_nrrd
 
@@ -37,7 +19,7 @@ def lst_to_features(dataset):
         os.makedirs(odir)
 
     print("read denoised raw/nrrd")
-    dtype, path, shape, offset, dx, dy, dz = nrrd_details(denoised_nrrd)
+    dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
     denoised = np.memmap(path, dtype, 'r', offset=offset, shape=shape, order='F')
 
     print("read lst pickle")
@@ -188,12 +170,12 @@ def classify(dataset):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     # denoised shape and pixels spacings (here: 1,1,1) ..
-    dtype, path, shape, offset, dx, dy, dz = nrrd_details(denoised_nrrd)
+    dtype, path, shape, offset, dx, dy, dz = img3.nrrd_details(denoised_nrrd)
     print("Read denoised.nrrd")
 
     # new cells array
-    cells8 = img3.mmap_create("%s/cells.raw" % os.path.dirname(denoised_nrrd), np.dtype("uint8"), shape)
-    img3.nrrd_write("%s/cells.nrrd" % os.path.dirname(denoised_nrrd), "%s/cells.raw" % os.path.dirname(denoised_nrrd), cells8.dtype, cells8.shape, (dx,dy,dz))
+    cells8 = img3.mmap_create("%s/%s_cells.raw" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), np.dtype("uint8"), shape)
+    img3.nrrd_write("%s/%s_cells.nrrd" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), "%s/%s_cells.raw" % (os.path.dirname(denoised_nrrd), os.path.basename(denoised_nrrd)), cells8.dtype, cells8.shape, (dx,dy,dz))
     img3.memset(cells8, 0)
     print("img3.memset(cells8, 0)")
 
