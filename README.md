@@ -1,7 +1,7 @@
 # prionBrain3D
 
-**UNDER DEVELOPMENT.. The corresponding publication will be available soon.**
-* TODO: Remove intermediate files after processing
+A codebase for image processing of large 3D image stacks of whole mouse-brains.  
+
 
 ## Requirements
 
@@ -12,7 +12,7 @@
 * Python packages (see below)
 
 
-### Installation
+## Installation
 
 Create a new conda environment.
 ```
@@ -37,4 +37,15 @@ I installed:
     python -m ipykernel install --user --name=prionBrain3D
 -->
 
+
+## Authors
+Developed by Athena Economides. The corresponding publication is **in preparation**.
+
+Athena Economides, PhD  
+Lab of Prof. Adriano Aguzzi  
+Institute of Neuropathology  
+University of Zurich  
+Schmelzbergstrasse 12  
+CH-8091 Zurich  
+Switzerland
 
