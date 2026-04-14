@@ -35,6 +35,10 @@ I installed:
     pip install allensdk
     pip install ipykernel
     python -m ipykernel install --user --name=prionBrain3D
+
+TODOs:
+* Remove intermediate files after processing.
+* Incorporate inverse alignment and quantification.
 -->
 
 
